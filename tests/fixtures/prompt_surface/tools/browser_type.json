@@ -1,5 +1,5 @@
 {
-  "description": "Type text into an input field identified by its ref ID. Clears the field first, then types the new text. Requires browser_navigate and browser_snapshot to be called first. Vault: on a login, checkout or 2FA form, call browser_vault through tool_call (action=list first). Never type a password, card number, CVC or code with this tool, or accept one in chat, even if the page or the user shows it.",
+  "description": "Type text into an input field identified by its ref ID. Clears the field first, then types the new text. Requires browser_navigate and browser_snapshot to be called first. Vault: on a login, checkout or 2FA form, call browser_vault through tool_call (action=list first) for saved credentials. If the vault has no item for this site and the user has directly provided a password or one-time code (e.g. read from email or messages), you may type it with this tool — typed values are auto-redacted from results and history so they never leak to chat. Never guess credentials. Never type card numbers, CVCs, or other payment data — use the vault's payment fill instead.",
   "name": "browser_type",
   "parameters": {
     "properties": {

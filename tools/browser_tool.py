@@ -913,9 +913,15 @@ def browser_type(ref: str, text: str, task_id: Optional[str] = None) -> str:
     ref = _at_ref(ref)
     result = _session._run_browser_command(effective_task_id, "fill", [ref, text])
     from agent.display import redact_browser_typed_text_for_display, redact_tool_args_for_display
+    from agent.redact import register_vault_redaction_value
     # Typed text goes through the secret-pattern redactor so API keys / tokens don't
     # leak into tool progress or chat history (the raw value already went to the browser).
+    # Values the pattern redactor flags as secret are also registered with the exact-match
+    # redaction boundary so they are scrubbed from ALL later browser tool results (snapshots,
+    # CDP eval passthrough), not just this one result.
     display_text = (redact_tool_args_for_display("browser_type", {"text": text}) or {})["text"]
+    if display_text != text:
+        register_vault_redaction_value(text)
     if result.get("success"):
         response = {"success": True, "typed": display_text, "element": ref}
     else:

@@ -249,8 +249,9 @@ def browser_vault_list() -> str:
             items.append(entry)
     out: dict[str, Any] = {"success": True, "items": items}
     if not items:
-        out["hint"] = ("No saved logins. On a login page, call browser_vault action=save_login to ask the user to save one. "
-                       "Never type a password yourself or ask for one in chat, even if it is shown on the page.")
+        out["hint"] = ("No saved logins. On a login page, call browser_vault action=save_login to ask the user to save one, "
+                       "or type the password or one-time code directly with browser_type when the user has provided it. "
+                       "Typed values are auto-redacted from results and history.")
     if locked:
         out["locked"] = locked
     if errors:
@@ -596,9 +597,12 @@ BROWSER_VAULT_SCHEMA = {
         "origin matches the item); save_login (nothing saved for this site: the user enters it in a masked prompt, "
         "Hermes saves and fills it); enter_code (a one-time/2FA code after the password: generated from a saved "
         "authenticator key or asked of the user; no_code_field means approve on their device); unlock (backend: "
-        "ask the user to unlock 1Password/Bitwarden). Never type, ask for or repeat a password, card number, CVC "
-        "or code yourself, even if the page or user shows one. Stop on save_declined; never retry "
-        "payment_declined."
+        "ask the user to unlock 1Password/Bitwarden). Prefer the vault for saved credentials. If the vault "
+        "has no item for this site and the user has directly provided a password or one-time code "
+        "(e.g. read from email or messages), you may type it with browser_type — typed values are "
+        "auto-redacted from results and history so they never leak to chat. Never guess credentials. "
+        "Never type card numbers, CVCs, or other payment data — use the vault's payment fill instead. "
+        "Stop on save_declined; never retry payment_declined."
     ),
     "parameters": {
         "type": "object",

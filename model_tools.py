@@ -436,9 +436,12 @@ def _rewrite_browser_vault(td: dict[str, Any], available: set) -> Optional[dict[
     return _fn_def({**fn, "description": fn.get("description", "").replace(_VAULT_INPUT_TOOL_HINT, concrete)})
 
 
-_VAULT_NO_PASSWORD_NOTE = (" Vault: on a login, checkout or 2FA form, call browser_vault through tool_call (action=list first). "
-                           "Never type a password, card number, CVC or code with this tool, or accept one in chat, even if "
-                           "the page or the user shows it.")
+_VAULT_NO_PASSWORD_NOTE = (" Vault: on a login, checkout or 2FA form, call browser_vault through tool_call (action=list first) "
+                           "for saved credentials. If the vault has no item for this site and the user has directly "
+                           "provided a password or one-time code (e.g. read from email or messages), you may type it "
+                           "with this tool — typed values are auto-redacted from results and history so they never "
+                           "leak to chat. Never guess credentials. Never type card numbers, "
+                           "CVCs, or other payment data — use the vault's payment fill instead.")
 
 
 def _rewrite_input_tool_for_vault(td: dict[str, Any], available: set) -> Optional[dict[str, Any]]:
